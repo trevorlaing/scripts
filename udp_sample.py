@@ -10,6 +10,6 @@ client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 client.sendto(b"Hello, Server!", (target_host, target_port))
 
 # receive some data
-response, server_address = client.recvfrom(4096)
+data, addr = client.recvfrom(4096)
 print(response.decode())
 client.close()   
