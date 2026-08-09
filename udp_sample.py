@@ -11,5 +11,5 @@ client.sendto(b"Hello, Server!", (target_host, target_port))
 
 # receive some data
 data, addr = client.recvfrom(4096)
-print(response.decode())
+print(data.decode())
 client.close()   
