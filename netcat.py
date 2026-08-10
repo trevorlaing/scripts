@@ -144,6 +144,8 @@ if __name__ == '__main__':
             netcat.py -t 192.168.1.1 -p 5555 -l -e=\"cat /etc/passwd\" # execute command
             echo  'ABC' | ./netcat.py -t 192.168.1.1 -p 135 # echo text to server port 135
             netcat.py -t 192.168.1.1 -p 5555 # connect to server
+
+            In command-shell mode, type 'exit' or 'quit' to close the session.
         '''))
     parser.add_argument('-c', '--command', action='store_true', help='command shell')
     parser.add_argument('-e', '--execute', help='execute specified command')
