@@ -1,5 +1,12 @@
 # Simple TCP proxy with optional FTP PASV/EPSV response rewriting.
 # Useful for learning how control and data channels interact.
+#
+# Usage:
+#   python proxy.py 127.0.0.1 8080 ftp.example.com 21 True
+#   python proxy.py 0.0.0.0 8080 ftp.example.com 21 False
+#
+# The proxy forwards a control connection and rewrites PASV/EPSV replies
+# so FTP passive-mode data transfers can be proxied through the local host.
 import sys
 import re
 import socket

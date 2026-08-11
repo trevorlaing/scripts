@@ -1,4 +1,9 @@
 # Simple SSH command runner using Paramiko.
+#
+# Usage:
+#   python ssh_cmd.py
+#
+# The script prompts for username/password and SSH server details.
 import paramiko
 
 def ssh_command(ip, port, user, passwd, cmd):
