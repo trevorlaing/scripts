@@ -12,3 +12,4 @@ Day One
 Day Two
 
 7th script ssh_rcmd.py
+8th script ssh_server.py
