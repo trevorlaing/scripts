@@ -1,9 +1,12 @@
+# Simple TCP proxy with optional FTP PASV/EPSV response rewriting.
+# Useful for learning how control and data channels interact.
 import sys
 import re
 import socket
 import threading
 import select
 
+# Mapping of bytes to printable characters for hex dump output.
 HEX_FILTER = ''.join(
     [(len(repr(chr(i))) == 3) and chr(i) or '.' for i in range(256)])
     
@@ -26,6 +29,7 @@ def hexdump(src, length=16, show=True):
         return results
 
 def receive_from(connection):
+    # Read all available data from a socket until it times out.
     buffer = b''
     connection.settimeout(60)
     try:
@@ -39,10 +43,11 @@ def receive_from(connection):
     return buffer
 
 def request_handler(buffer):
-    # Perform packet modifications if needed
+    # Modify outgoing packets from client to server if needed.
     return buffer
 
 def response_handler(buffer, local_host, remote_host):
+    # Rewrite FTP passive-mode responses so the client connects through us.
     if buffer.startswith(b'227'):
         return rewrite_pasv_response(buffer, local_host)
     if buffer.startswith(b'229'):
@@ -127,7 +132,7 @@ def proxy_data_connection(local_data_socket, remote_host, remote_port):
         print('[*] FTP data proxy closed.')
 
 def proxy_handler(client_socket, remote_host, remote_port, receive_first, local_host):
-    # Connect to the remote host
+    # Handle one client connection and proxy data to the remote host.
     remote_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     remote_socket.connect((remote_host, remote_port))
 

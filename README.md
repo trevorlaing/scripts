@@ -5,3 +5,5 @@ Day One
 2nd script udp_sample.py
 3rd script multi_tcp.py
 4th script netcat.py
+5th script proxy.py
+6th script ssh_cmd.py
