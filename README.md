@@ -14,6 +14,7 @@ Files of interest
 - `ssh_cmd.py` — simple Paramiko-based SSH command runner (client-side).
 - `ssh_rcmd.py` — remote-command helper that executes commands received over SSH.
 - `ssh_server.py` — minimal Paramiko SSH server example (educational only).
+- rforward.py
 
 Dependencies
 - Python 3.8+ (tested with 3.11)
