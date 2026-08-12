@@ -18,6 +18,8 @@ def execute(cmd):
     cmd = cmd.strip()
     if not cmd:
         return
+    # Use shlex.split to safely split command into argv (avoids shell=True).
+    # We capture stderr and stdout together so the client sees all output.
     output = subprocess.check_output(shlex.split(cmd), stderr=subprocess.STDOUT)
     return output.decode()
 
@@ -54,10 +56,12 @@ class NetCat:
                     response += data.decode()
                     if recv_len < 4096:
                         break
+                # Print server response and prompt the local user for input.
                 if response:
                     print(response, end='')
                     buffer = input('> ')
                     buffer += '\n'
+                    # Send local input to the remote side as bytes.
                     self.socket.send(buffer.encode())
                 else:
                     break
@@ -74,6 +78,7 @@ class NetCat:
         try:
             while True:
                 client_socket, _ = self.socket.accept()
+                # Spawn a thread to handle each client so multiple connections work.
                 client_thread = threading.Thread(target=self.handle, args=(client_socket,))
                 client_thread.daemon = True
                 client_thread.start()
@@ -110,6 +115,7 @@ class NetCat:
             cmd_buffer = b''
             try:
                 while True:
+                    # Prompt the remote user for a command.
                     client_socket.send(b'BHP: #> ')
                     while b'\n' not in cmd_buffer:
                         data = client_socket.recv(64)

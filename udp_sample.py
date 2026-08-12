@@ -16,5 +16,7 @@ client.sendto(b"Hello, Server!", (target_host, target_port))
 
 # receive some data
 data, addr = client.recvfrom(4096)
+
+# Print the received payload and close the socket.
 print(data.decode())
-client.close()   
+client.close()

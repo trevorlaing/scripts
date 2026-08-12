@@ -24,7 +24,7 @@ def hexdump(src, length=16, show=True):
     results = list()
     for i in range(0, len(src), length):
         word = str(src[i:i+length])
-        
+        # Create a printable ASCII representation and hex bytes for visibility.
         printable = word.translate(HEX_FILTER)
         hexa = ' '.join([f'{ord(c):02x}' for c in word])
         hexwidth = length*3
@@ -46,6 +46,7 @@ def receive_from(connection):
                 break
             buffer += data
     except Exception as e:
+        # Timeout or other socket error is expected when no more data.
         pass
     return buffer
 
@@ -70,6 +71,7 @@ def rewrite_pasv_response(buffer, local_host):
     remote_data_host = '.'.join(p.decode() for p in parts[:4])
     remote_data_port = int(parts[-2]) * 256 + int(parts[-1])
 
+    # Create a temporary listener for the proxied FTP data connection.
     listener = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     listener.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     listener.bind((local_host, 0))
@@ -93,6 +95,7 @@ def rewrite_epsv_response(buffer, local_host, remote_host):
         return buffer
 
     remote_data_port = int(match.group(1))
+    # Create listener socket for EPSV rewritten data port.
     listener = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     listener.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     listener.bind((local_host, 0))
@@ -105,6 +108,8 @@ def rewrite_epsv_response(buffer, local_host, remote_host):
 def start_ftp_data_proxy(listener, remote_host, remote_port):
     def data_proxy():
         try:
+            # Accept a single incoming data connection from the FTP client
+            # and proxy bytes between that socket and the remote data port.
             local_data_socket, addr = listener.accept()
             print(f'[*] Accepted FTP data connection from {addr[0]}:{addr[1]}')
             proxy_data_connection(local_data_socket, remote_host, remote_port)
@@ -127,11 +132,13 @@ def proxy_data_connection(local_data_socket, remote_host, remote_port):
                 data = local_data_socket.recv(4096)
                 if not data:
                     break
+                # Forward bytes from local client to remote data socket.
                 remote_data_socket.sendall(data)
             if remote_data_socket in readable:
                 data = remote_data_socket.recv(4096)
                 if not data:
                     break
+                # Forward bytes from remote data socket back to client.
                 local_data_socket.sendall(data)
     finally:
         local_data_socket.close()
@@ -143,6 +150,7 @@ def proxy_handler(client_socket, remote_host, remote_port, receive_first, local_
     remote_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     remote_socket.connect((remote_host, remote_port))
 
+    # Buffer to hold any initial data received from remote server.
     remote_buffer = b''
     if receive_first:
         remote_buffer = receive_from(remote_socket)
@@ -156,6 +164,7 @@ def proxy_handler(client_socket, remote_host, remote_port, receive_first, local_
 
     # If we have data to send to our local client, send it
     if len(remote_buffer):
+        # If remote sent data first, forward it to the local client.
         print(f'[<==] Sending {len(remote_buffer)} bytes to localhost.')
         client_socket.sendall(remote_buffer)
 

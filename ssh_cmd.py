@@ -25,8 +25,10 @@ if __name__ == '__main__':
     user = input('Username: ')
     password = getpass.getpass()
     
+    # Prompt for server details; provide sensible defaults.
     ip = input('Enter server IP: ') or '192.168.1.203'
     port_input = input('Enter port or <CR>: ')
+    # Convert the entered port to an integer before passing to Paramiko.
     port = int(port_input) if port_input else 2222
     cmd = input('Enter command or <CR>: ') or 'id'
     ssh_command(ip, port, user, password, cmd)
