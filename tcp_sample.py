@@ -1,3 +1,9 @@
+"""TCP client sample: connect to a host and fetch a simple HTTP response.
+
+Minimal example showing how to create a TCP socket, send an HTTP
+request, and print the response.
+"""
+
 import socket
 
 target_host = "www.google.com"

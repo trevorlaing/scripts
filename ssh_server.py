@@ -1,3 +1,9 @@
+"""Simple Paramiko-based SSH server example for testing and learning.
+
+This script implements a minimal SSH server using Paramiko for
+educational/demo purposes only.
+"""
+
 import os
 import paramiko
 import socket
@@ -5,6 +11,7 @@ import sys
 import threading
 
 CMD = os.path.dirname(os.path.realpath(__file__))
+# Path to the server private key used for SSH host authentication.
 HOSTKEY = paramiko.RSAKey(filename=os.path.join(CMD, 'test_rsa.key'))
 
 class Server (paramiko.ServerInterface):

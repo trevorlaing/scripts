@@ -1,3 +1,8 @@
+"""Simple multi-threaded TCP server that acknowledes received data.
+
+Accepts multiple connections and responds with a short ACK message.
+"""
+
 import socket
 import threading
 

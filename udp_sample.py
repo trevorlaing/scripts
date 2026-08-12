@@ -1,3 +1,8 @@
+"""UDP client sample: send a datagram and wait for a response.
+
+Demonstrates basic UDP socket usage with sendto/recvfrom.
+"""
+
 import socket
 
 target_host = "127.0.0.1"
