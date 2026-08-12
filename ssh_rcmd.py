@@ -31,7 +31,7 @@ def ssh_command(ip, port, user, passwd, command):
                     client.close()
                     break
                 # Run the received command locally and send back output.
-                cmd_output = subprocess.check_output(shlex.split(cmd), shell=True)
+                cmd_output = subprocess.check_output(shlex.split(cmd))
                 ssh_session.send(cmd_output or b'okay')
             except Exception as e:
                 # Send exception text back to remote.
@@ -45,5 +45,6 @@ if __name__ == '__main__':
     password = getpass.getpass()
     
     ip = input('Enter server IP: ')
-    port = input('Enter port: ')
+    port_input = input('Enter port: ')
+    port = int(port_input) if port_input else 22
     ssh_command(ip, port, user, password, 'ClientConnected')
