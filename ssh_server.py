@@ -37,7 +37,7 @@ class Server (paramiko.ServerInterface):
 if __name__ == '__main__':
     # Set up a TCP socket to listen for incoming SSH connections.
     server_host = '192.168.3.1'
-    ssh_port = 2222
+    ssh_port = 22 #need to sudo to bind to port 22, or use a higher port for testing
     try:
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
